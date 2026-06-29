@@ -333,12 +333,21 @@
 const CONFIG = {
   groom:    "Бексултан",
   bride:    "Даяна",
-  dateISO:  "2026-09-12T17:00:00",   // дата+время торжества для таймера
-  dateShort:"12 · IX · 2026",
-  time:     "17:00",
-  mapUrl:   "https://2gis.kz/",
-  ru:{ dateText:"12 сентября 2026", venue:"Ресторан «Сказка»<br>ул. Абая, 10, Астана" },
-  kk:{ dateText:"2026 жылғы 12 қыркүйек", venue:"«Сказка» мейрамханасы<br>Абай к-сі, 10, Астана" }
+  dateISO:  "2026-09-05T17:00:00",   // дата+время торжества для таймера
+  dateShort:"05 · IX · 2026",
+  ru:{
+    dateText:"5 сентября 2026",
+    time:"17:00 Беташар<br>18:00 Той",
+    timeShort:"17:00",
+    venue:"Granada Hall<br>Алматы"
+  },
+  kk:{
+    dateText:"2026 жылғы 5 қыркүйек",
+    time:"17:00 Беташар<br>18:00 Той",
+    timeShort:"17:00",
+    venue:"Granada Hall<br>Алматы"
+  },
+  mapUrl:   "https://2gis.kz/almaty/geo/70000001041104821/76.816898,43.221486",
 };
 /* =================================== */
 
@@ -406,9 +415,9 @@ function applyLang(lang){
   $('f-groom').textContent = CONFIG.groom; $('f-bride').textContent = CONFIG.bride;
   $('f-date').textContent  = CONFIG.dateShort;
   $('r-date').textContent  = CONFIG[lang].dateText;
-  $('cd-when').textContent = CONFIG[lang].dateText + ' · ' + CONFIG.time;
+  $('cd-when').textContent = CONFIG[lang].dateText + ' · ' + CONFIG[lang].timeShort;
   $('d-date').textContent  = CONFIG[lang].dateText;
-  $('d-time').textContent  = CONFIG.time;
+  $('d-time').innerHTML    = CONFIG[lang].time;
   $('d-venue').innerHTML    = CONFIG[lang].venue;
   $('d-map').href          = CONFIG.mapUrl;
   document.title = CONFIG.groom + ' & ' + CONFIG.bride + ' — ' + t.crest_eyebrow;
@@ -420,7 +429,7 @@ function choose(lang){
   $('gate').classList.add('hidden');
   document.body.style.overflow = '';
   setTimeout(()=>{ $('gate').style.display='none'; }, 600);
-  render();
+  requestAnimationFrame(render);
 }
 
 // lock scroll until a language is chosen
@@ -441,15 +450,15 @@ function render(){
   const gp=clamp(p/0.62,0,1);
   const eased=1-Math.pow(1-gp,3);
   const TILT=13;
-  const w=holdL.offsetWidth;
+  const w=holdL.getBoundingClientRect().width||230;
   // на сколько px уезжает ободок при полном наклоне (ободок ~274 ед. над точкой вращения)
   const rimTravel=(274*(w/170))*Math.sin(TILT*Math.PI/180);
   const baseGap=rimTravel*0.93;                              // в конце ободки соприкасаются, тела врозь
   const spread=Math.min(window.innerWidth*0.16,160)*(1-eased);
   const off=baseGap+spread;
   const tilt=TILT*eased;
-  holdL.style.transform=`translateX(calc(-50% - ${off}px)) rotate(${tilt}deg)`;
-  holdR.style.transform=`translateX(calc(-50% + ${off}px)) rotate(${-tilt}deg)`;
+  holdR.style.transform=`translateX(calc(-50% - ${off}px)) rotate(${tilt}deg)`;
+  holdL.style.transform=`translateX(calc(-50% + ${off}px)) rotate(${-tilt}deg)`;
   if(gp>0.97 && !clinked){clinked=true;spark.classList.remove('flash');void spark.offsetWidth;spark.classList.add('flash');}
   if(gp<0.9) clinked=false;
   const rp=clamp((p-0.6)/0.3,0,1);
@@ -466,7 +475,8 @@ if(reduce){
   reveal.style.opacity=1; reveal.style.transform='none'; hint.style.display='none';
 }else{
   window.addEventListener('scroll',()=>{ if(!ticking){requestAnimationFrame(render);ticking=true;} },{passive:true});
-  window.addEventListener('resize',render);
+  window.addEventListener('resize',()=>requestAnimationFrame(render));
+  requestAnimationFrame(render);
 }
 
 /* ---------- countdown ---------- */
