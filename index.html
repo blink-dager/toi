@@ -334,7 +334,7 @@ const CONFIG = {
   groom:    "Бексултан",
   bride:    "Даяна",
   dateISO:  "2026-09-05T17:00:00",   // дата+время торжества для таймера
-  dateShort:"05 · IX · 2026",
+  dateShort:"05 · 09 · 2026",
   ru:{
     dateText:"5 сентября 2026",
     time:"17:00 Беташар<br>18:00 Той",
@@ -495,12 +495,19 @@ tick(); setInterval(tick,1000);
 let attend=null;
 $('yes').addEventListener('click',()=>{attend='yes';$('yes').classList.add('on');$('no').classList.remove('on');});
 $('no').addEventListener('click', ()=>{attend='no'; $('no').classList.add('on'); $('yes').classList.remove('on');});
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbwL7tzqCRPDeiPtcE44IosEKDZ6qNSTN2LW0sgg0C0WrRLwnF1VvV_qmgp6WLi0n_5A/exec';
 $('send').addEventListener('click',()=>{
   const name=$('name').value.trim();
   if(!name){$('name').focus();return;}
-  // TODO: отправка на бэкенд / Google-форму / Formspree
-  $('form').style.display='none';
-  $('thanks').classList.add('show');
+  const btn=$('send');
+  btn.disabled=true; btn.style.opacity='.5';
+  fetch(SCRIPT_URL,{
+    method:'POST',
+    body:JSON.stringify({name, attend, msg:$('msg').value.trim()}),
+  }).catch(()=>{}).finally(()=>{
+    $('form').style.display='none';
+    $('thanks').classList.add('show');
+  });
 });
 
 // инициализация контента (язык по умолчанию пока ru, окончательно — после выбора)
