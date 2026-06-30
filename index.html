@@ -495,7 +495,7 @@ tick(); setInterval(tick,1000);
 let attend=null;
 $('yes').addEventListener('click',()=>{attend='yes';$('yes').classList.add('on');$('no').classList.remove('on');});
 $('no').addEventListener('click', ()=>{attend='no'; $('no').classList.add('on'); $('yes').classList.remove('on');});
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbwL7tzqCRPDeiPtcE44IosEKDZ6qNSTN2LW0sgg0C0WrRLwnF1VvV_qmgp6WLi0n_5A/exec';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbytXuGSjdxFoUOMPyXqgFKeSVVB_mMfDawmpyKHGqaDYFUSOVt_WW9oWDdqHTET5W1PSA/exec';
 $('send').addEventListener('click',()=>{
   const name=$('name').value.trim();
   if(!name){$('name').focus();return;}
